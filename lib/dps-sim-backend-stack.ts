@@ -16,24 +16,24 @@ export class DpsSimBackendStack extends cdk.Stack {
 
     // ************** Lambda Functions **************
 
-    const entry = path.join(__dirname, '../src/lambda/helloWorld.py')
-
     const helloWorldLambda = new PythonFunction(this, 'helloWorld', {
-      entry,
-      runtime: Runtime.PYTHON_3_9
-    })
+      entry: path.join(__dirname, '../src/lambda/'),
+      runtime: Runtime.PYTHON_3_9,
+      handler: 'helloWorld.handler',
+      index: './helloWorld.py'
+    });
 
     // ************** API Gateway **************
 
     const httpAPI = new HttpApi(this, 'DPSSimAPI', {
       apiName: 'DPSSimAPI'
-    })
+    });
 
     httpAPI.addRoutes({
       path: '/report',
       methods: [ HttpMethod.POST ],
       integration: new HttpLambdaIntegration('helloWorld', helloWorldLambda)
-    })
+    });
 
   }
 }
