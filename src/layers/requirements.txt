@@ -1,4 +1,0 @@
-numpy
-boto3
-botocore
-simc-support

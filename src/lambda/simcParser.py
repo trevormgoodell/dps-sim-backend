@@ -1,8 +1,8 @@
 import os
 import boto3
 import json
-import itertools
 import numpy as np
+
 
 
 envQueueUrl = os.environ['ENV_QUEUE_URL']
@@ -15,7 +15,14 @@ def handler(event, context):
     print(event)
     print(context)
 
-    message = generate_message()
+    inputs = generate_inputs()
+
+
+
+    message = client.send_message(
+            QueueUrl=envQueueUrl,
+            MessageBody=np.array2string(inputs)
+        )
 
     return {
         'statusCode': 200,
@@ -46,15 +53,3 @@ def generate_inputs(max_stats=2900):
 
     return all_stats
     
-def generate_message():
-    inputs = generate_inputs()
-
-    message = client.send_message(
-            QueueUrl=envQueueUrl,
-            MessageBody=(inputs)
-        )
-    
-    return message
-
-if __name__ == "__main__":
-    generate_inputs()
