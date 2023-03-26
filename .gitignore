@@ -4,6 +4,8 @@
 node_modules
 site-packages
 
+*notes.txt
+
 # CDK asset staging directory
 .cdk.staging
 cdk.out
