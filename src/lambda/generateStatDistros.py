@@ -3,33 +3,31 @@ import boto3
 import json
 import numpy as np
 
-
-
-envQueueUrl = os.environ['ENV_QUEUE_URL']
-
-
-client = boto3.client('sqs')
+client = boto3.client('stepfunctions')
 
 def handler(event, context):
-    print('Hello, world!')
-    print(event)
-    print(context)
-
     inputs = generate_inputs()
+    print("Event:", event)
+    print("Context:", context)
 
+    outputs = []
 
+    for stat_distro in inputs:
+        json_input = {  
+            "main_stat": int(stat_distro[0]),
+            "haste": int(stat_distro[1]),
+            "critical_strike": int(stat_distro[2]), 
+            "versatility": int(stat_distro[3]),
+            "mastery": int(stat_distro[4]),
+            }
+        outputs.append(json_input)
 
-    message = client.send_message(
-            QueueUrl=envQueueUrl,
-            MessageBody=np.array2string(inputs)
-        )
+    response = {"Stats": outputs}
+    print("Response:", response)
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps(message, indent=2)
-    }
+    return response
 
-def generate_stat_distros(percent=5):       
+def generate_stat_distros(percent=10):       
     if 100 / percent != int(100 / percent):
         print("Percent must equally divide 100")
         return
@@ -52,4 +50,3 @@ def generate_inputs(max_stats=2900):
     all_stats = np.concatenate((main_stat, stat_distros), axis=1) * max_stats
 
     return all_stats
-    

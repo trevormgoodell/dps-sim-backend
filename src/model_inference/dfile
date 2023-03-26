@@ -1,0 +1,11 @@
+FROM public.ecr.aws/lambda/python:3.8
+
+FROM tensorflow/tensorflow
+
+ADD Druid ./
+ADD Util ./
+
+COPY agent.py ./
+COPY runModelInferenceDistros.py ./
+
+CMD ["runModelInferenceDistros.handler"]
